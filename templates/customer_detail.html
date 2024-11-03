@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="table-responsive">
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <h1>ФИО: {{ customer.first_name }} {{ customer.last_name }}</h1>
+            <a href="{% url 'update_customer' customer.id %}">
+                <img src="{% static 'img/edit.png' %}" alt="edit">
+            </a>
+            <a href="{% url 'delete_customer' customer.id %}">
+                <img src="{% static 'img/remove.png' %}" alt="remove">
+            </a>
+        </div>
+        <p>Возраст: {{ customer.calculate_age }}</p>
+        <p>Номер телефона: {{ customer.phone_number }}</p>
+        <p>Группа: {{ customer.group.name }}</p>
+        <p>Дата рождения: {{ customer.date_of_birth }}</p>
+        
+    </div>
+{% endblock %}

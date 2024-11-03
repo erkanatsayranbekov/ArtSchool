@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card-container">
+    {% for group in groups %}
+    <div class="card">
+        <div class="button_holder">
+            <div>
+                <h2><a href="{% url 'attendance' group.id %}">{{ group.name }} ({{ group.weekdays }})</a></h2>
+                <p> {{ group.start_time }}-{{ group.end_time }}</p>
+            </div>
+            <a href="{% url 'group_update' group.id %}">
+                <img src="{% static 'img/edit.png' %}" alt="edit">
+            </a>
+            <a href="{% url 'group_delete' group.id %}">
+                    <img src="{% static 'img/remove.png' %}" alt="remove">
+            </a>
+        </div>
+        
+
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

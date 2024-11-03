@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% load attendance_tags %}
+
+
+{% block content %}
+    <div class="container"> 
+        <h1>{{ header }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ФИО</th>
+                        {% for day in calendar %}
+                            <th>{{ day|date:"D" }} ({{ day|date:"d.m.Y" }})</th>  
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                        <tr>
+                            <td>{{ customer.first_name }} {{ customer.last_name }}</td>
+                            {% for day in calendar %}
+                                {% with date=day|date:"d.m.Y" %}
+                                <td>
+                                    {% with attendance_record=attendance_records|get_item:customer.id %}
+                                        <input 
+                                            type="checkbox" 
+                                            name="{{ customer.id }}-{{ day|date:'d.m.Y' }}" 
+                                            value="on" 
+                                            {% if attendance_record|get_item:date %}checked{% endif %}
+                                        >
+                                    {% endwith %}
+                                </td>
+                                {% endwith %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}
