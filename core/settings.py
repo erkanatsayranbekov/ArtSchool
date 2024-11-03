@@ -1,10 +1,22 @@
+import dotenv
 from pathlib import Path
+from os import getenv, path, environ
+import sys
+import dj_database_url
+from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-_gply_l4=^aaak8_g^u)$_87&1pp(vvj@cfb&1i1dtc#&3w#-s'
+dotenv_file = BASE_DIR / '.env'
 
-DEBUG = True
+DEVELOPMENT_MODE = getenv('DEVELOPMENT_MODE', 'False') == 'True'
+
+if path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
+
+SECRET_KEY = getenv('DJANGO_SECRET_KEY', get_random_secret_key())
+
+DEBUG = getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -48,12 +60,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEVELOPMENT_MODE is True:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
+elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
+    if getenv('DATABASE_URL', None) is None:
+        raise Exception('DATABASE_URL environment variable not defined')
+    DATABASES = {
+        'default': dj_database_url.parse(getenv('DATABASE_URL')),
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
