@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from os import getenv, path, environ
 from django.core.management.utils import get_random_secret_key
@@ -9,7 +10,7 @@ DEVELOPMENT_MODE = False
 
 SECRET_KEY = getenv('DJANGO_SECRET_KEY', get_random_secret_key())
 
-DEBUG = getenv('DEBUG', 'False') == 'True'
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -95,7 +96,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
