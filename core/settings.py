@@ -1,18 +1,11 @@
-import dotenv
 from pathlib import Path
 from os import getenv, path, environ
-import sys
-import dj_database_url
 from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-dotenv_file = BASE_DIR / '.env'
 
-DEVELOPMENT_MODE = getenv('DEVELOPMENT_MODE', 'False') == 'True'
-
-if path.isfile(dotenv_file):
-    dotenv.load_dotenv(dotenv_file)
+DEVELOPMENT_MODE = False
 
 SECRET_KEY = getenv('DJANGO_SECRET_KEY', get_random_secret_key())
 
@@ -67,11 +60,16 @@ if DEVELOPMENT_MODE is True:
             'NAME': path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
-    if getenv('DATABASE_URL', None) is None:
-        raise Exception('DATABASE_URL environment variable not defined')
+else:
     DATABASES = {
-        'default': dj_database_url.parse(getenv('DATABASE_URL')),
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'art_school',
+            'USER': 'admin',
+            'PASSWORD': 'gp8OqjPbYXOFcl071qOVNEfm8LTDURe1',
+            'HOST': 'dpg-csjl3rhu0jms73b2smig-a.frankfurt-postgres.render.com',
+            'PORT': '5432',
+        }
     }
 
 AUTH_PASSWORD_VALIDATORS = [
